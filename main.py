@@ -59,7 +59,7 @@ s.add(z3.And(a2 == z3.StringVal("getObject"), p2 == z3.StringVal("admin"),
 
 # can principal admin access resource 'protected/secret.prot'?, i.e.,
 # can we have principal == admin and (secret.prot in resources) ? 
-query = z3.And(p2 == z3.StringVal("admin"), z3.IsMember(z3.StringVal('protected/secret.prot'), resources))
+query = z3.And(p2 == z3.StringVal("admin"),r2 == z3.StringVal('protected/secret.prot'))
 s.add(query)
 assert s.check() == z3.sat
 
