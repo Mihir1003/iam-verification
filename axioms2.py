@@ -27,5 +27,8 @@ s = Solver()
 s.add(axioms)
 print(s.check())
 s.add(Not(tc_allow(role1,role2)))
-print(s.check())
+if s.check() == "unsat":
+    print("authorized")
+else:
+    print("unauthourized")
 # print(s.model())
