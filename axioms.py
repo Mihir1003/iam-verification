@@ -28,6 +28,8 @@ Policy Evaluation:
                 [Session principles in  the future]
 '''
 
+
+
 PrincipalSort = z3.StringSort()
 
 Policy = z3.Datatype("Policy")
@@ -54,7 +56,8 @@ def check_policy(p, i):
 	return z3.And(Policy.Effect(p), Role.iam(i) == Policy.Principle(p))
 
 def checkUser(role, identity):
-	return check_policy(Role.policy(role), identity)
+    return check_policy(Role.policy(role), identity)
+	# return z3.And(Policy.Effect(p), Role.iam(i) == Policy.Principle(p))
 
 test_policy = Policy.Policy(z3.BoolVal(True), z3.StringVal("C"))
 test_role = Role.Role(test_policy, z3.StringVal("B"))
@@ -66,16 +69,20 @@ access_role2 = Role.Role(Policy.Nothing, z3.StringVal("D"))
 r1 = z3.Const('r1', Role)
 r2 = z3.Const('r2', Role)
 r3 = z3.Const('r3', Role)
-allowsImplication = z3.ForAll([r1, r2], z3.Implies(checkUser(r1, r2), Allow(r1, r2)))
-transitivity = z3.ForAll([r1, r2, r3], z3.Implies(z3.And(Allow(r1, r2), Allow(r2, r3)), Allow(r1, r3)))
-
+# allowsImplication = z3.ForAll([r1, r2], z3.Implies(checkUser(r1, r2), Allow(r1, r2)))
+# transitivity = z3.ForAll([r1, r2, r3], z3.Implies(z3.And(Allow(r1, r2), Allow(r2, r3)), Allow(r1, r3)))
+# TC_Allow = z3.TransitiveClosure(Allow)
 s = z3.Solver()
-s.add(allowsImplication)
-s.add(transitivity)
-s.add(z3.And(r1 == test_role, r2 == access_role1, r3 == access_role2)) 
-s.add(checkUser(r1, r2))
-s.add(checkUser(r1, r3))
-
+# s.add(allowsImplication)
+# s.add(transitivity)
+# s.add(z3.Implies(z3.ForAll([r1,r2],z3.And(Policy.Effect(Role.policy(r1)), Role.iam(r2) == Policy.Principle(Role.policy(r1)))),Allow(r1,r2)))
+# s.add(z3.And(r1 == access_role1, r2 == test_role, r3 == access_role2)) 
+# s.add(checkUser(r1, r2))
+# s.add(checkUser(r1, r3))
+# print(checkUser(test_role,access_role1))
+# s.add(r1!= r2)
+# s.add(checkUser(test_role,access_role2))
+s.add(checkUser(test_role,access_role1))
 if s.check() == z3.sat:
 	print(s.model())
 else:
