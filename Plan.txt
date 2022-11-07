@@ -1,0 +1,6 @@
+4 phases of execution:
+1. Principle and identity checking
+2. Policy checking
+3. Identity to Identity Mapping
+4. Transitivity checks
+
