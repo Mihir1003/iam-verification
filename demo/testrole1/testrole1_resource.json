@@ -1,0 +1,32 @@
+{
+    "Role": {
+        "Path": "/",
+        "RoleName": "testrole1",
+        "RoleId": "AROATF6H27MPTH3R6XX7D",
+        "Arn": "arn:aws:iam::218925562655:role/testrole1",
+        "CreateDate": "2022-11-21T06:51:14+00:00",
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "Statement1",
+                    "Effect": "Allow",
+                    "Principal": {
+                        "AWS": [
+                            "arn:aws:iam::218925562655:user/test2",
+                            "arn:aws:iam::218925562655:user/test1",
+                            "arn:aws:iam::218925562655:user/test3"
+                        ]
+                    },
+                    "Action": "sts:AssumeRole"
+                }
+            ]
+        },
+        "Description": "",
+        "MaxSessionDuration": 3600,
+        "RoleLastUsed": {
+            "LastUsedDate": "2022-11-21T07:46:24+00:00",
+            "Region": "us-east-1"
+        }
+    }
+}

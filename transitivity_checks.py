@@ -19,33 +19,46 @@ def generateAxioms(args):
     # args : tuple of identities iams (strings)
     for (iam1, iam2) in args:
         AllowedIdentityPairs = SetAdd(AllowedIdentityPairs, Tuple.tuple(StringVal(iam1), StringVal(iam2)))
+        AllowedIdentityPairs = SetAdd(AllowedIdentityPairs, Tuple.tuple(StringVal(iam1), StringVal(iam1)))
+        AllowedIdentityPairs = SetAdd(AllowedIdentityPairs, Tuple.tuple(StringVal(iam2), StringVal(iam2)))        
 
     i1, i2 = Strings('i1 i2')
-    return ForAll([i1, i2], Implies(Not(IsMember(AllowedIdentityPairs, Tuple.tuple(i1, i2))), T_allow(i1, i2) == BoolVal(False)))
+    return ForAll([i1, i2], Implies(Not(IsMember(Tuple.tuple(i1, i2), AllowedIdentityPairs)), Allow(i1, i2) == BoolVal(False)))
 
 def generateChecks(args):
     # args : tuple of identities iams (strings)
-    return [Not(T_allow(StringVal(iam1),StringVal(iam2))) for iam1,iam2 in args]
+    return [T_allow(StringVal(iam1),StringVal(iam2)) for iam1,iam2 in args]
 
-def transitivity_check(args,check):
+def relation_check(args,check):
     s = Solver()
     s.add(generateAxioms(args))
     if s.check() == unsat:
         raise Exception("Invalid args")
     s.add(generateChecks(check))
+    print(generateChecks(check))
     if s.check() == unsat:
-        return True
+        return False
     else:
         print(s.model())
-        return False
+        return True
 
 class TransitivityChecker(unittest.TestCase):
-
     def test1(self):
-        self.assertTrue(transitivity_check([("role1","role2"),("role2","role3")],[("role1","role3")]))
-    
-    def test2(self):
-        self.assertFalse(transitivity_check([("role1","role2"),("role2","role3")],[("role3","role1")]))
+        relations = [("role1","role2"),("role2","role3")]
+        self.assertTrue(relation_check(relations,[("role1","role3")]))
+        self.assertFalse(relation_check(relations, [("role2", "role1")]))
+        self.assertFalse(relation_check(relations, [("role3", "role1")]))
+        self.assertFalse(relation_check(relations, [("role3", "role2")]))
+        
+        self.assertTrue(relation_check(relations,[("role1","role1")]))
+        self.assertTrue(relation_check(relations, [("role2", "role2")]))
+        self.assertTrue(relation_check(relations, [("role3", "role3")]))
+
+        self.assertFalse(relation_check(relations, [("role4", "role4")]))
+
+
+    # def test2(self):
+    #     self.assertFalse(transitivity_check([("role1","role2"),("role2","role3")],[("role3","role1")]))
     
     """
     Allow(Identity(StringVal("role1")),Identity(StringVal("role2")))
@@ -56,8 +69,8 @@ class TransitivityChecker(unittest.TestCase):
     Not(T_allow(Identity(StringVal("role1")),Identity(StringVal("role3"))))
     """
     def test3(self):
-        self.assertFalse(transitivity_check([("role1","role2"),("role2","role3"), ("role4", "role4")],
-                                                [("role1", "role3")]))
-
+        relations = [("role1","role2"),("role2","role3"), ("role4", "role4")]
+        self.assertTrue(relation_check(relations, [("role1", "role3")]))
+        self.assertFalse(relation_check(relations, [("role1", "role4")])) 
   
 unittest.main()

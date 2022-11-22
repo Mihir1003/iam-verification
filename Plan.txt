@@ -1,6 +1,12 @@
 4 phases of execution:
 1. Principle and identity checking
+    - Does an identity fall under a principal
+    - Start with individual user and role. Treat user group as user
+    - Check whether arns match a valid principal
 2. Policy checking
+    - Does a particular policy alow an identity
 3. Identity to Identity Mapping
+    - Given the set of all policies associated with an identity,
+      does another identity have access to it
 4. Transitivity checks
 

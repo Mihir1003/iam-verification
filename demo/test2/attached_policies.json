@@ -1,0 +1,8 @@
+{
+    "AttachedPolicies": [
+        {
+            "PolicyName": "assumeTestRoles",
+            "PolicyArn": "arn:aws:iam::218925562655:policy/assumeTestRoles"
+        }
+    ]
+}

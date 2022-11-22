@@ -4,15 +4,21 @@ import re
 from functools import reduce
 import itertools
 
-SPECIAL_CHARS = "+=,.@_-"
-ALPHANUMERIC = string.ascii_uppercase+string.ascii_lowercase+string.digits
-special_char_regex = reduce(lambda re, ch: z3.Union(re, z3.Re(ch)), SPECIAL_CHARS[1:], z3.Re(SPECIAL_CHARS[0]))
+SPECIAL_CHARS = reduce(z3.Union, map(z3.Re, "+=,.@_-"))
+ASCII_UPPERCASE = z3.Range(string.ascii_uppercase[0], string.ascii_uppercase[-1])
+ASCII_LOWERCASE = z3.Range(string.ascii_lowercase[0], string.ascii_lowercase[-1])
+ASCII_DIGITS = z3.Range(string.digits[0], string.digits[-1])
+ALPHANUMERIC = z3.Union(ASCII_UPPERCASE,
+                        ASCII_LOWERCASE,
+                        ASCII_DIGITS)
 
 # a wildcard '*' matches 0 or more valid id characters
-WILDCARD_STAR_REGEX = z3.Star(z3.Union(z3.Re(SPECIAL_CHARS), z3.Re(ALPHANUMERIC)))
+WILDCARD_STAR_REGEX = z3.Star(z3.Union(ALPHANUMERIC, SPECIAL_CHARS))
 
 # the wildcard '?' matches a single valid id character
-WILDCARD_QUESTION_REGEX = z3.Plus(z3.Union(z3.Re(SPECIAL_CHARS), z3.Re(ALPHANUMERIC)))
+WILDCARD_QUESTION_REGEX = z3.Union(ALPHANUMERIC, SPECIAL_CHARS)
+print(WILDCARD_STAR_REGEX)
+print(WILDCARD_QUESTION_REGEX)
 
 """
 we assume a pattern looks like the following:
@@ -21,7 +27,6 @@ wild_card = '*' | '?'
 special_char ::= + | = | , | . | @ | _ | - 
 id_char ::= [aA-zZ0-9] | special_char | wild_card 
 arn_component ::= id_char* | arn_component ':' arn_component
-
 """
 
 def to_wildcard(wildcard_char: str):
@@ -32,9 +37,8 @@ def to_wildcard(wildcard_char: str):
 	else:
 		raise ValueError(f'unknown wildcard {wildcard_char}')
 
-# converts an AWS resource string to a z3 regex which matches that string
-# this same code should probably work for other contexts that allow matching as well
-def resource_id_to_regex(pattern: str):
+# converts an AWS wildcard pattern to a z3 regex which matches that string
+def iam_pattern_to_regex(pattern: str):
 	wildcards = re.findall(r"\*|\?", pattern)
 	parts = re.split(r"\*|\?", pattern)
 

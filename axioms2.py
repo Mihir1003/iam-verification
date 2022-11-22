@@ -35,13 +35,7 @@ axioms =[
         Allowed(Identity(i2),Principal(p1))),
         Allow(Identity(i2),Identity(i1))))]
 
-
-
-
 class TransitivityChecker(unittest.TestCase):
-
-
-
     def test_3elems(self):
         solver = Solver()
         solver.add(axioms)
@@ -51,7 +45,7 @@ class TransitivityChecker(unittest.TestCase):
             Policy(true,Identity(role3),Principal(role3)),
             ]
         solver.add(constraints)
-        checks= [
+        checks = [
             # Not(Allow(Identity(role1),Identity(role2))),
             # Allow(Identity(role2),Identity(role3)),
             Not(tc_allow(Identity(role1),Identity(role3)))]
@@ -105,12 +99,11 @@ unittest.main()
 #     Policy(true,Identity(role3),Principal(role4)),
 #     DeclareIdentity(role4),
 
-    # Allow(Identity(role1),Identity(role2)),
-    # Allow(Identity(role2),Identity(role3)),
-    # Allow(Identity(role3),Identity(role3)),
-    # Allow(Identity(role4),Identity(role4))
-    
-    # ]
+#     Allow(Identity(role1),Identity(role2)),
+#     Allow(Identity(role2),Identity(role3)),
+#     Allow(Identity(role3),Identity(role3)),
+#     Allow(Identity(role4),Identity(role4))
+# ]
 
     # Policy(true,Identity(role4),Principal(role4)),
     # DeclareIdentity(role4),

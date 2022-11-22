@@ -1,0 +1,30 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "VisualEditor0",
+                    "Effect": "Allow",
+                    "Action": [
+                        "sts:GetSessionToken",
+                        "sts:DecodeAuthorizationMessage",
+                        "sts:GetAccessKeyInfo",
+                        "sts:GetCallerIdentity",
+                        "sts:GetServiceBearerToken"
+                    ],
+                    "Resource": "*"
+                },
+                {
+                    "Sid": "VisualEditor1",
+                    "Effect": "Allow",
+                    "Action": "sts:*",
+                    "Resource": "arn:aws:iam::218925562655:role/testrole*"
+                }
+            ]
+        },
+        "VersionId": "v1",
+        "IsDefaultVersion": true,
+        "CreateDate": "2022-11-21T06:45:18+00:00"
+    }
+}

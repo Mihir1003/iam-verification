@@ -1,0 +1,12 @@
+{
+    "AttachedPolicies": [
+        {
+            "PolicyName": "assumeTestRoles",
+            "PolicyArn": "arn:aws:iam::218925562655:policy/assumeTestRoles"
+        },
+        {
+            "PolicyName": "IAMUserChangePassword",
+            "PolicyArn": "arn:aws:iam::aws:policy/IAMUserChangePassword"
+        }
+    ]
+}
