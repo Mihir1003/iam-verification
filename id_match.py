@@ -17,8 +17,6 @@ WILDCARD_STAR_REGEX = z3.Star(z3.Union(ALPHANUMERIC, SPECIAL_CHARS))
 
 # the wildcard '?' matches a single valid id character
 WILDCARD_QUESTION_REGEX = z3.Union(ALPHANUMERIC, SPECIAL_CHARS)
-print(WILDCARD_STAR_REGEX)
-print(WILDCARD_QUESTION_REGEX)
 
 """
 we assume a pattern looks like the following:
