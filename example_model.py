@@ -57,7 +57,7 @@ def Policy(e, u, a, r):
                     e == BoolVal(True)),
 
                And(u == StringVal("arn:aws:iam::218925562655:role/testrole2"),
-                    InRe(a, iam_pattern_to_regex("s3:GetObject")),
+                    InRe(a, iam_pattern_to_regex("s3:*")),
                     InRe(r, iam_pattern_to_regex("*")))
     )
 
