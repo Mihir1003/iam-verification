@@ -105,7 +105,13 @@ def usePolicyContraints(e, u, a, r, ls):
 def usePolcies(ls):
     return usePolicyContraints(BoolVal(True),StringVal("arn:aws:iam::218925562655:user/test1"),StringVal("*"),StringVal("*"),list(map(lambda x: generatePolicyContraints(*x),ls)))
 
-print(usePolcies(transformPolicyArray(get_all_identities_with_policies())))
+def createPolcyFunction(ls):
+    return lambda e, u, a, r: usePolicyContraints(BoolVal(e),StringVal("arn:aws:iam::218925562655:user/test1"),StringVal("*"),StringVal("*"),list(map(lambda x: generatePolicyContraints(*x),ls)))
+
+#transformPolicyArray(get_all_identities_with_policies())
+
+print(str(usePolcies(transformPolicyArray(get_all_identities_with_policies()))))
+print(list(map(lambda x: generatePolicyContraints(*x),transformPolicyArray(get_all_identities_with_policies()))))
 # print(usePolicyContraints(BoolVal(True),StringVal("arn:aws:iam::218925562655:user/test1"),StringVal("*"),StringVal("*"),list(map(lambda x: generatePolicyContraints(*x),zip(flat_map(extract,policies),["arn:aws:iam::218925562655:user/test1"]* len(policies))))))
  
  
@@ -135,7 +141,6 @@ def Policy(e, u, a, r):
         InRe(a, iam_pattern_to_regex("sts:*")),
         InRe(r, iam_pattern_to_regex("arn:aws:iam::218925562655:role/testrole*"))),
                 
-
 
         And(e == BoolVal(True),
             u == StringVal("arn:aws:iam::218925562655:user/test1"),
