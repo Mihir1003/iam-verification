@@ -17,8 +17,8 @@ class ExampleModelTest(unittest.TestCase):
         self.assertSat(Policy(BoolVal(True), StringVal("arn:aws:iam::218925562655:user/test1"), StringVal("sts:Assume"),
                                 StringVal("arn:aws:iam::218925562655:role/testrole1")))
     
-    # def test_access_reflexive(self):
-    #     self.assertSat(Access(StringVal("arn:aws:iam::218925562655:user/test1"), StringVal("arn:aws:iam::218925562655:user/test1")))
+    def test_access_reflexive(self):
+        self.assertSat(Access(StringVal("arn:aws:iam::218925562655:user/test1"), StringVal("arn:aws:iam::218925562655:user/test1")))
     
     def test_access_user_role(self):
         self.assertSat(Access(StringVal("arn:aws:iam::218925562655:user/test1"), StringVal("arn:aws:iam::218925562655:role/testrole1")))

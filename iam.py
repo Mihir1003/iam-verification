@@ -62,8 +62,6 @@ def fetch_groups_for_user(user):
 def fetch_group_attached_polcies(group):
     return iam.list_attached_group_policies(GroupName=group)["AttachedPolicies"]
 
-
-
 def fetch_all_polcies_for_user(user):
     groups = fetch_groups_for_user(user)
     policies = list(flat_map(fetch_group_attached_polcies,map(get("GroupName"),groups)))
@@ -102,7 +100,6 @@ def transformPolicyArray(ips):
     return ip
     #  return list(zip([identity]*len(policies),policies))
 
-
 def get_all_identities_with_policies():
     users = fetch_users()
     users_polcies = list(zip(map(get("Arn"),users),map(fetch_all_polcies_for_user,map(get("UserName"),users))))
@@ -113,7 +110,7 @@ def get_all_identities_with_policies():
     # print(roles_polcies)
     print("Fetch Role Polcies")
     return users_polcies + roles_polcies
-transformPolicyArray(get_all_identities_with_policies())
+#transformPolicyArray(get_all_identities_with_policies())
 # print(get_all_identities_with_policies())
 # print(list(flat_map(lambda x: mapIdentityToPolicies(*x),get_all_identities_with_policies())))
 # groups = []
