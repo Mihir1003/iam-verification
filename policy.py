@@ -84,6 +84,7 @@ def constructListCheck(check,ls):
     return tuple(map(check,ls))
 
 def generatePolicyConstraints(user,policy):
+    #print(f"user: {user}; policy: {policy}")
     effect = policy["Effect"] == "Allow"
     actions = policy["Action"]
     resources = policy["Resource"]
@@ -194,8 +195,7 @@ def Policy(e, u, a, r):
 # constraints = [generatePolicyConstraints("arn:aws:iam::218925562655:user/test1", 
 #     extract(policies[0])[0])]
 
-def transpileAll():
-    policies = transformPolicyArray(get_all_identities_with_policies())
+def transpile(policies):
     policy = createPolicyFunction(policies)
 
     access = RecFunction('Access', StringSort(), StringSort(), BoolSort())
@@ -215,3 +215,7 @@ def transpileAll():
         'TC_Access': tc_access,
         'Allow': allow
     }
+
+def transpileAll():
+    policies = transformPolicyArray(get_all_identities_with_policies())
+    return transpile(policies)
