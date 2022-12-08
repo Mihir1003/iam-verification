@@ -144,19 +144,19 @@ def createPolicyFunction(ls):
     #     case *resource:
     #         pass
     
-def Policy(e, u, a, r):
-    return Or(
-        And(
-        e == BoolVal(True),
-        u == StringVal("arn:aws:iam::218925562655:user/test1"), 
-        InRe(a, iam_pattern_to_regex("sts:*")),
-        InRe(r, iam_pattern_to_regex("arn:aws:iam::218925562655:role/testrole*"))),
+# def Policy(e, u, a, r):
+#     return Or(
+#         And(
+#         e == BoolVal(True),
+#         u == StringVal("arn:aws:iam::218925562655:user/test1"), 
+#         InRe(a, iam_pattern_to_regex("sts:*")),
+#         InRe(r, iam_pattern_to_regex("arn:aws:iam::218925562655:role/testrole*"))),
                 
 
-        And(e == BoolVal(True),
-            u == StringVal("arn:aws:iam::218925562655:user/test1"),
-                InRe(a, iam_pattern_to_regex("s3:*")),
-                InRe(r, iam_pattern_to_regex("*"))))
+#         And(e == BoolVal(True),
+#             u == StringVal("arn:aws:iam::218925562655:user/test1"),
+#                 InRe(a, iam_pattern_to_regex("s3:*")),
+#                 InRe(r, iam_pattern_to_regex("*"))))
 
 
 # print(Policy(BoolVal(True),StringVal("arn:aws:iam::218925562655:user/test1"),StringVal("*"),StringVal("*")))
@@ -208,7 +208,7 @@ def transpile(policies):
     def allow(u, a, r):
         q = FreshConst(StringSort())
         return And(tc_access(u, q), 
-             Policy(BoolVal(True), q, a, r))
+             policy(BoolVal(True), q, a, r))
     return {
         'Policy': policy,
         'Access': access, 

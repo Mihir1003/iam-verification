@@ -29,7 +29,7 @@ S3_BUCKET_ACTIONS = [
 
 STS_ACTIONS: list[str] = [
     "sts:AssumeRole",
-    "sts:*"
+    #"sts:*"
 ]
 
 @dataclass
@@ -160,6 +160,26 @@ def to_digraph(adj):
 def generate_user_policy(role_arn):
     return Policy([Statement(True, [random.choice(STS_ACTIONS)], [f"{role_arn}*"])])
 
+def remove_unmapped_roles(dg, role_to_user):
+    nodes = list(dg.nodes)
+    for node in nodes:
+        if len(role_to_user[node]) == 0:
+            dg.remove_node(node)
+
+def rand_walk(dg, k):
+    v = random.choice(list(dg.nodes))
+    seen = 0
+    path = []
+    while seen < k:
+        path.append(v)
+        seen += 1
+        if len(dg[v]) == 0:
+            break
+        else:
+            v = random.choice(list(dg[v]))
+    
+    return path
+
 @dataclass
 class IAMTestConfiguration:
     # the params used for generating this test
@@ -174,14 +194,27 @@ class IAMTestConfiguration:
     role_graph: nx.DiGraph
 
     def generate_allow_test(self):
-        lp = nx.dag_longest_path(self.role_graph)
+        dg = self.role_graph.copy()
+        remove_unmapped_roles(dg, self.role_to_user)
+        lp = nx.dag_longest_path(dg)
         user = random.choice(self.role_to_user[lp[0]])
         action, resource = random.choice(self.role_to_action_resource_pairs[lp[-1]])
 
         return (user, action, resource, len(lp))
+    
+    def generate_random_allow_test(self):
+        dg = self.role_graph.copy()
+        remove_unmapped_roles(dg, self.role_to_user)
+        lp = nx.dag_longest_path(dg)
+        p = rand_walk(dg, len(lp))
+        user = random.choice(self.role_to_user[p[0]])
+        action, resource = random.choice(self.role_to_action_resource_pairs[p[-1]])
+
+        return (user, action, resource)
+
 
 def generate_iam_test(params):
-    roles = generate_roles(num_role_groups=params['num_role_groups'])
+    roles = generate_roles(num_role_groups=params['num_role_groups'], max_role_group_size=params['roles_per_group'])
     adj = generate_role_assumption_graph(flatten(roles), branching_factor=params['role_branching_factor'])
 
     user_policies, role_to_user  = generate_user_policies(roles, n=params['num_users'])
@@ -193,6 +226,8 @@ def generate_iam_test(params):
     role_dicts = flat_map(extract, map(lambda role_policy: policy_to_dict(role_policy[1]), role_policies))
     role_arns =  flat_map(lambda role_policy: [role_policy[0]]*len(role_policy[1].statements), role_policies)
     all_policies = list(zip(policy_arns, policy_dicts)) + list(zip(role_arns, role_dicts))
+
+    #print(all_policies)
     env = transpile(all_policies)
 
     return IAMTestConfiguration(params, env, role_to_user, role_to_pairs, nx.DiGraph(adj))

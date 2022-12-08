@@ -4,6 +4,7 @@ from z3 import Solver, sat, StringVal
 
 params1 = {
     'num_role_groups': 2,
+    'roles_per_group': 4,
     'role_branching_factor': 3,
     'num_users': 10,
     'max_n_objects': 4,
@@ -111,11 +112,14 @@ def perform_test(params, id):
     else:
         print('unsat')
 
-perform_test(params1, id=1)
-perform_test(params2, id=2)
-perform_test(params3, id=3)
-perform_test(params4, id=4)
-perform_test(params5, id=5)
-perform_test(params6, id=6)
-perform_test(params7, id=7)
-perform_test(params8, id=8)
+#perform_test(params1, id=1)
+
+# perform_test(params2, id=2)
+# perform_test(params3, id=3)
+# perform_test(params4, id=4)
+# perform_test(params5, id=5)
+# perform_test(params6, id=6)
+# perform_test(params7, id=7)
+# perform_test(params8, id=8)
+t = generate_iam_test(params1)
+print(t.generate_random_allow_test())
